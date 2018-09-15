@@ -16,6 +16,12 @@
           <ButtonText>Open in File Explorer</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidOBFCommandSet" id="cmdOpenBinMenu" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_EXPLORE" />
+        <Strings>
+          <ButtonText>Open bin Folder (Explorer)</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
     <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\LocateFolderCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
@@ -27,6 +33,9 @@
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="LocateFolderCommandId" value="0x0100" />
     </GuidSymbol>
+    <GuidSymbol name="guidOBFCommandSet" value="{02AB237F-F580-4278-A02B-8DA88483528E}">
+      <IDSymbol name="cmdOpenBinMenu" value="0x3B9ACA01" />
+    </GuidSymbol>
     <GuidSymbol name="guidImages" value="{5e8cab23-2d9a-4775-a222-eb8e1dcdc033}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
@@ -34,6 +43,9 @@
       <IDSymbol name="bmpPicX" value="4" />
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+    <GuidSymbol name="guidOBFCommandSet" value="{02AB237F-F580-4278-A02B-8DA88483528E}">
+      <IDSymbol name="cmdOpenBinMenu" value="0x3B9ACA01" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

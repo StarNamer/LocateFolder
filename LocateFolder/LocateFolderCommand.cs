@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
@@ -20,12 +21,14 @@ namespace LocateFolder
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int LFCommandId = 0x0100;
+        public const int OBFCommandId = 0x3B9ACA01;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("f31449ab-b753-48fe-bf3f-25c691905367");
+        public static readonly Guid LocateFolderCommandSet = new Guid("f31449ab-b753-48fe-bf3f-25c691905367");
+        public static readonly Guid OpenBinFolderCommandSet = new Guid("02AB237F-F580-4278-A02B-8DA88483528E");
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -47,8 +50,12 @@ namespace LocateFolder
 
             this._applicationObject = appObj ?? throw new ArgumentNullException(nameof(_applicationObject));
 
-            var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new MenuCommand(this.Execute, menuCommandID);
+            var menuCommandID = new CommandID(LocateFolderCommandSet, LFCommandId);
+            var menuItem = new MenuCommand(this.LocateFolder, menuCommandID);
+            commandService.AddCommand(menuItem);
+
+            menuCommandID = new CommandID(OpenBinFolderCommandSet, OBFCommandId);
+            menuItem = new MenuCommand(this.OpenBinFolderWithFileExplorer, menuCommandID);
             commandService.AddCommand(menuItem);
         }
 
@@ -84,6 +91,7 @@ namespace LocateFolder
 
             OleMenuCommandService commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
             DTE2 applicationObject = await package.GetServiceAsync(typeof(DTE)) as DTE2;
+
             Instance = new LocateFolderCommand(package, commandService, applicationObject);
         }
 
@@ -94,7 +102,7 @@ namespace LocateFolder
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private void LocateFolder(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -108,5 +116,37 @@ namespace LocateFolder
                                                                 select ((ProjectItem)((UIHierarchyItem)t).Object).FileNames[1]));
             }
         }
+
+        private void OpenBinFolderWithFileExplorer(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            //Get the active projects within the solution.
+            Array _activeProjects = (Array)_applicationObject.ActiveSolutionProjects;
+
+            //loop through each active project
+            foreach (Project _activeProject in _activeProjects)
+            {
+                //get the directory path based on the project file.
+                string _projectPath = Path.GetDirectoryName(_activeProject.FullName);
+                //get the output path based on the active configuration
+                string _projectOutputPath = _activeProject.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString();
+                //combine the project path and output path to get the bin path
+                string _projectBinPath = Path.Combine(_projectPath, _projectOutputPath);
+
+                //if the directory exists (already built) then open that directory
+                //in windows explorer using the diagnostics.process object
+                if (Directory.Exists(_projectBinPath))
+                {
+                    System.Diagnostics.Process.Start(_projectBinPath);
+                }
+                else
+                {
+                    //if the directory doesnt exist, open the project directory.
+                    System.Diagnostics.Process.Start(_projectPath);
+                }
+            }
+        }
+
     }
 }
