@@ -13,13 +13,13 @@
         <Parent guid="guidLocateFolderCommandPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Open in File Explorer</ButtonText>
+          <ButtonText>Select in File Explorer</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidOBFCommandSet" id="cmdOpenBinMenu" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_EXPLORE" />
         <Strings>
-          <ButtonText>Open bin Folder (Explorer)</ButtonText>
+          <ButtonText>Open 'bin' folder(s) in File Explorer</ButtonText>
         </Strings>
       </Button>
     </Buttons>
